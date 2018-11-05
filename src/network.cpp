@@ -20,7 +20,6 @@ bool Network::add_link(const size_t& a, const size_t& b)
 	{
 		pair <multimap<size_t,size_t>::iterator, multimap<size_t,size_t>::iterator> result = links.equal_range(a);
 		
-		//cout << "!!!!"<< (result.first)->second<<endl;
 	
 		for( multimap<size_t,size_t>::iterator i = result.first; i != result.second; i++)
 		{
