@@ -20,12 +20,11 @@ bool Network::add_link(const size_t& a, const size_t& b)
 	{
 		pair <multimap<size_t,size_t>::iterator, multimap<size_t,size_t>::iterator> result = links.equal_range(a);
 		
-	
 		for( multimap<size_t,size_t>::iterator i = result.first; i != result.second; i++)
 		{
 			 if(i->second==b)
 			 {
-				//cout << "the link: " << a << "to" << b << "already exist" << endl;
+				cout<<" FAIL already existing link"<<endl;
 				return false;
 			 }
 		 }
@@ -34,103 +33,69 @@ bool Network::add_link(const size_t& a, const size_t& b)
 		 
 		 vector<size_t> alist(this->neighbors(a)); 
 		 vector<size_t> blist(this->neighbors(b)); 
-
-		 
-		 cout << "link sucessfully made: "<< endl;
-		 cout << a << " => ";
-		 
-		 for(size_t i(0); i<alist.size();i++)
-		{
-		  cout<<alist[i]<<" ";
-		}
-		cout<<endl;
-		cout << b << " => ";
-		for(size_t i(0); i<blist.size();i++)
-		{
-		  cout<<blist[i]<<" ";
-		}
-		cout<<endl;
-		 
-		 
-		 
-		  
-		 return true;
+       
+        return true;
 		
 
 	}else{
+		cout<<"FAIL A=B >==> "<<a<<" = "<<b<<endl;
 		return false;
 	}
 }
 
 size_t Network::random_connect(const double& n)
 {
-	
-	cout<< "RANDOM CONNECTING"<<endl;
-	size_t totalNoConnections;
+	int totalNoConnections = 0;
+	int totalNoConnectionsFake = 0;
 	
 	//erase privious links 	
 	links.clear();
 	
-	cout << " (1) for each values find no connection: " <<endl;
 	vector<size_t> connectionDegrees (values.size());
+	//no.poisson(connectionDegrees,n)
+	
 	for(size_t i(0); i<connectionDegrees.size(); i++)
 	{
-	 connectionDegrees[i]=this->degree(n);
-	 cout << "value "<< i << " => no connections: "<<connectionDegrees[i]<<endl;
+	 connectionDegrees[i]=no.poisson(n);
+	 totalNoConnectionsFake = totalNoConnectionsFake + connectionDegrees[i];
 	}
 	
-	cout<< "(3)makeing  the desired connection" <<endl;
 	vector<size_t> valuesCopy(values.size());
+	
+	for(size_t i(0); i<valuesCopy.size(); i++)
+	{
+		valuesCopy[i]=i;
+	}
 	
 	for(size_t i(0); i<values.size(); i++)
 	{
-	
+		bool repeat;
 		no.shuffle(valuesCopy);
-		for(size_t con(0); con<connectionDegrees[i]; con++)
-		do{
-			bool repeat = this->add_link(i,valuesCopy(con));
-		}while(repeat==false)
-			
-		
-	}
-	
-	//run trough all the nodes
-	//cout<< "(1) running trough all the values: " << values.size() <<endl;
-    /*
-	for(size_t nod(0); nod < values.size(); nod++)
-	{	
-		  
-		size_t noConnections;
-		//find the number of connections
-		cout<<"(2)find the number of connections for "<<nod<<" => ";
-		
-		do
-		{	
-		 noConnections = this->degree(n);
-	    }while(noConnections > values.size()-links.count(values[nod]) or noConnections<=0);
-	    
-	    cout<< noConnections <<endl;
-	    
-	    //make the desired connection
-	    cout<< "(3)makeing  the desired connection" <<endl;
-		for(size_t i=(1); i<=noConnections; noConnections++)
+		cout<<">>>>>>>>> connecting value: "<<i<<" to "<<connectionDegrees[i]<<" other values<<<<<<<<<<<<"<<endl;
+		if(connectionDegrees[i]!=0)
 		{
-			bool repeat;
-			do
-			{   size_t connectTo = this->degree(n);
-				if(connectTo<values.size())
-				{	
-					repeat = this->add_link(values[nod],connectTo);
-					repeat = true;
-				}else{
-					repeat= false;
+			for(size_t con(1); con<=connectionDegrees[i]; con++)
+			{
+				cout<<"___CONNECTION TRY: "<<con<<" --> connect "<< i <<" to "<< valuesCopy[con];
+				repeat = this->add_link(i,valuesCopy[con]);
+			
+				totalNoConnections = totalNoConnections + 1;
+				cout<<" tot conn after connection try: "<<totalNoConnections<<endl;
+			
+				if(not(repeat))
+				{
+					totalNoConnections = totalNoConnections - 1;
+					connectionDegrees[i] = connectionDegrees[i]+1;
+					cout<<"+tot conn after try failed: "<<totalNoConnections<<endl;
 				}
-		    }while(repeat==false);
-		    
-		    totalNoConnections++;
-		}	
-	}*/
-	return totalNoConnections;		
+			}
+		}
+	}
+	cout<<" -_-_-_-_tot conn step by step_-_-_-_- "<<totalNoConnections<<endl;
+	//cout<<"_-_-_-_-tot conn calculated _-_-_-_-_ "<< totalNoConnectionsFake <<endl;
+	cout<<"_-_-_-_-tot conn with links.size() _-_-_-_-_ "<< links.size()/2 <<endl;
+	return totalNoConnections;
+	 		
 }
 
 size_t Network::set_values(const std::vector<double>&v)
@@ -147,11 +112,10 @@ size_t Network::size() const
 
 size_t Network::degree(const size_t & _n) const
 {
-	RandomNumbers no;
-	//size_t nb(no.poisson(_n));
-	//cout <<"mon nbr de retour pour"<< _n <<"est:"<< nb <<endl;
-	
-	return no.poisson(_n);
+	if(_n<=values.size())
+	{
+	 	return links.count(_n);
+	}
 }
 
 double  Network::value(const size_t &_n) const
@@ -168,19 +132,12 @@ std::vector<double> Network::sorted_values() const
 
 std::vector<size_t> Network::neighbors(const size_t&n) const
 {
-	//cout<< "NEIGHBORS GENERATING  the list for " << n <<" contains:"<<endl;
 	vector<size_t> neighborslist;
 	auto find = links.equal_range(n);
 	for(auto i = find.first;i != find.second;i++)
 	{
 		neighborslist.push_back(i->second);
 	}
-	/*
-	for(size_t i(0); i<neighborslist.size();i++)
-	{
-		cout<<neighborslist[i]<<endl;
-	}
-	*/
 	return neighborslist;
 }
 
