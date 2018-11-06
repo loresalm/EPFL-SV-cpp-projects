@@ -8,12 +8,34 @@ SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 SET(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -pedantic")
 SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 option(test "Build tests." ON)
+option(graphtest "Build tests." ON)
 
 include_directories("/usr/local/include" ${CMAKE_SOURCE_DIR}/include)
 link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 
 add_executable(NetSim src/main.cpp src/network.cpp src/simulation.cpp src/random.cpp)
+
+if(graphtest) 
+set(SFML_DIR "${CMAKE_CURRENT_SOURCE_DIR}/include/SFML-2.5.1/lib/cmake/SFML")
+find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
+add_executable(SFMLTest src/graphic_test.cpp src/network.cpp src/random.cpp)
+target_link_libraries(SFMLTest sfml-graphics sfml-audio)
+endif(graphtest)
+
+#[[
+if (test)
+enable_testing()
+add_subdirectory(gtest)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+add_executable(testNetSim src/test_main.cpp src/network.cpp src/simulation.cpp src/random.cpp )
+
+target_link_libraries(testNetSim gtest gtest_main)
+add_test(Network_simulation testNetSim)
+endif(test)
+]]
+
 
 if (test)
   enable_testing()

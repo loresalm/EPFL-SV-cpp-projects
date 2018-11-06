@@ -1,0 +1,7 @@
+/home/lorenzo/Desktop/EPFL-SV-cpp-projects/b/CMakeFiles/rebuild_cache.dir
+/home/lorenzo/Desktop/EPFL-SV-cpp-projects/b/CMakeFiles/SFMLTest.dir
+/home/lorenzo/Desktop/EPFL-SV-cpp-projects/b/CMakeFiles/test.dir
+/home/lorenzo/Desktop/EPFL-SV-cpp-projects/b/CMakeFiles/NetSim.dir
+/home/lorenzo/Desktop/EPFL-SV-cpp-projects/b/CMakeFiles/testNetSim.dir
+/home/lorenzo/Desktop/EPFL-SV-cpp-projects/b/CMakeFiles/doc.dir
+/home/lorenzo/Desktop/EPFL-SV-cpp-projects/b/CMakeFiles/edit_cache.dir
