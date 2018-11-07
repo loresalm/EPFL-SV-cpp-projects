@@ -11,9 +11,9 @@ int main()
     Network net;
     size_t netsize;
     //here you can set the size of your network PLEASE DO NOT EXCEED 100
-    net.Network::resize(70);
+    net.Network::resize(60);
     //here you can set the average number of connection for each node
-    netsize=net.Network::random_connect(2);
+    netsize=net.Network::random_connect(5);
 
 
 
@@ -30,8 +30,6 @@ int main()
     std::string s;
     double newAngles = 0;
 
-     net.Network::resize(70);
-     netsize=net.Network::random_connect(2);
      double posx;
      double posy;
      double posY_link;
