@@ -80,13 +80,14 @@ size_t Network::random_connect(const double& n)
 
 				totalNoConnections = totalNoConnections + 1;
 
-
+                /*
 				if(not(repeat))
 				{
 					totalNoConnections = totalNoConnections - 1;
 					connectionDegrees[i] = connectionDegrees[i]+1;
 
 				}
+				*/
 			}
 		}
 	}
